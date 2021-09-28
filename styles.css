@@ -1,0 +1,64 @@
+* {
+  margin: 0;
+  padding: 0;
+
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+/*styles: header*/
+header {
+  display: flex;
+  justify-content: flex-end;
+
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+
+  background-color: rgb(243, 243, 243);
+}
+
+.cart-button {
+  padding: 0.5rem 0.8rem;
+
+  background-color: rgb(80, 161, 253);
+
+  color: white;
+  font-size: 0.9rem;
+
+  border: none;
+  border-radius: 0.5rem;
+  outline: none;
+}
+
+.cart-button:hover {
+  background-color: rgb(18, 122, 240);
+
+  cursor: pointer;
+}
+
+/*styles: content*/
+.goods-list {
+  display: flex;
+  justify-content: center;
+  flex-flow: row wrap;
+}
+
+.goods-item {
+  padding: 2rem;
+
+  background-color: rgb(177, 209, 247);
+
+  border: 1px solid rgb(243, 243, 243);
+  border-radius: 0.4rem;
+}
+
+.goods-item:not(:last-child) {
+  margin-right: 1rem;
+}
+
+.goods-item h3 {
+  margin-bottom: 0.8rem;
+}
