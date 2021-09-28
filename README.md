@@ -1,1 +1,1 @@
-# Magazin
+# Magazine
