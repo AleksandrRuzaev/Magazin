@@ -38,10 +38,15 @@ header {
   cursor: pointer;
 }
 
-.goods-list {
+.goods-list, 
+.basket-list {
   display: flex;
   justify-content: center;
   flex-flow: row wrap;
+}
+
+.basket-list {
+  border-bottom: 1px solid black;
 }
 
 .goods-item {
