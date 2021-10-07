@@ -1,8 +1,10 @@
 import { GoodsItem } from './goods-item';
 
 class BasketItem extends GoodsItem {
-    constructor(title, price, selector) {
-        super(title, price, selector);
+    constructor(id, title, price, selector, quantity) {
+        super(id, title, price, selector);
+
+        this.quantity = quantity;
     }
 
     remove() {
@@ -18,7 +20,7 @@ class BasketItem extends GoodsItem {
     }
 
     render() {
-        throw Error('Not implemented');
+        return `<div class="${this.selector}"><h3>${this.title}</h3><p>${this.price}</p></div>`;
     }
 }
 

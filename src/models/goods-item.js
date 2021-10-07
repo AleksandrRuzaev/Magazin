@@ -1,5 +1,6 @@
 class GoodsItem {
-    constructor(title, price, selector) {
+    constructor(id, title, price, selector) {
+        this.id = id;
         this.title = title;
         this.price = price;
         this.selector = selector;
