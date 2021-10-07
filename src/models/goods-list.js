@@ -1,4 +1,6 @@
 import { GoodsItem } from './goods-item';
+import { API_URL } from '../utils/constants';
+import { makeGETRequest } from '../utils/helpers';
 
 class GoodsList {
     constructor(selector) {
@@ -7,12 +9,24 @@ class GoodsList {
     }
 
     fetchGoods() {
-        this.goods = [
-            { title: 'Shirt', price: 150 },
-            { title: 'Socks', price: 50 },
-            { title: 'Jacket', price: 350 },
-            { title: 'Shoes', price: 250 },
-        ].map((good) => new GoodsItem(good.title, good.price, 'goods-item'));
+        return (
+            makeGETRequest(`${API_URL}/catalogData.json`)
+                .then((goods) => {
+                    this.goods = goods.map(
+                        (good) =>
+                            new GoodsItem(
+                                good.id_product,
+                                good.product_name,
+                                good.price,
+                                'goods-item',
+                            ),
+                    );
+                })
+                // .then((_) => {
+                //     this.render();
+                // })
+                .catch((err) => console.error(err))
+        );
     }
 
     getSumPrice() {
