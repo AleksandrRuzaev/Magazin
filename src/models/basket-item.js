@@ -1,14 +1,15 @@
 import { GoodsItem } from './goods-item';
 
 class BasketItem extends GoodsItem {
-    constructor(id, title, price, selector, quantity) {
-        super(id, title, price, selector);
+    constructor(id, title, price, selector, quantity, onDelete, onAdd) {
+        super(id, title, price, selector, onAdd);
 
         this.quantity = quantity;
+        this.onDelete = onDelete;
     }
 
     remove() {
-        throw Error('Not implemented');
+        this.onDelete(this.id);
     }
 
     increaseCount() {
@@ -20,7 +21,28 @@ class BasketItem extends GoodsItem {
     }
 
     render() {
-        return `<div class="${this.selector}"><h3>${this.title}</h3><p>${this.price}</p></div>`;
+        const basketItem = document.createElement('div');
+        basketItem.classList.add(this.selector, `${this.selector}-basket`);
+
+        const basketItemTitle = document.createElement('h3');
+        basketItemTitle.textContent = this.title;
+
+        const basketItemPrice = document.createElement('p');
+        basketItemPrice.textContent = this.price;
+
+        const basketItemQuantity = document.createElement('p');
+        basketItemQuantity.textContent = this.quantity;
+
+        const basketItemRemoveBtn = document.createElement('button');
+        basketItemRemoveBtn.textContent = 'Remove';
+        basketItemRemoveBtn.onclick = this.remove.bind(this);
+
+        basketItem.appendChild(basketItemTitle);
+        basketItem.appendChild(basketItemPrice);
+        basketItem.appendChild(basketItemQuantity);
+        basketItem.appendChild(basketItemRemoveBtn);
+
+        return basketItem;
     }
 }
 
