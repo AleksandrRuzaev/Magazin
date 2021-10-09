@@ -38,15 +38,66 @@ header {
   cursor: pointer;
 }
 
+.basket-modal {
+  display: none;
+  position: absolute;
+  position: fixed;
+  top: 0;left: 0;
+  height: 100%;
+  width: 100%;
+  inset: 0 0 0 0;
+
+  z-index: 10;
+
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.4);
+}
+
+.basket {
+  width: 80%;
+  height: 50%;
+  margin: auto;
+  padding: 1.25rem;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  position: relative;
+  
+  background-color: #fefefe;
+
+  border: 1px solid #888;
+  border-radius: 2rem;
+}
+
+.basket-header {
+  margin-bottom: 2rem;
+}
+
+.close {
+  position: absolute;
+  top: .5rem;
+  right: 1rem;
+
+  color: #aaaaaa;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
 .goods-list, 
 .basket-list {
   display: flex;
   justify-content: center;
   flex-flow: row wrap;
-}
-
-.basket-list {
-  border-bottom: 1px solid black;
 }
 
 .goods-item {
