@@ -3,9 +3,11 @@ import { API_URL } from '../utils/constants';
 import { makeGETRequest } from '../utils/helpers';
 
 class GoodsList {
-    constructor(selector) {
+    constructor(selector, onAdd) {
         this.selector = selector;
         this.goods = [];
+
+        this.onAdd = onAdd;
     }
 
     fetchGoods() {
@@ -19,6 +21,7 @@ class GoodsList {
                                 good.product_name,
                                 good.price,
                                 'goods-item',
+                                this.addItem.bind(this),
                             ),
                     );
                 })
@@ -29,6 +32,10 @@ class GoodsList {
         );
     }
 
+    addItem(good) {
+        this.onAdd(good);
+    }
+
     getSumPrice() {
         return this.goods.reduce((total, good) => {
             return (total += good.price);
@@ -36,15 +43,18 @@ class GoodsList {
     }
 
     render() {
-        let listHtml = '';
+        const items = [];
 
         this.goods.forEach((good) => {
-            listHtml += good.render();
+            items.push(good.render());
         });
 
-        document
-            .querySelector(this.selector)
-            .insertAdjacentHTML('beforeend', listHtml);
+        const basket = document.querySelector(this.selector);
+        basket.innerHTML = '';
+
+        items.forEach((item) => {
+            basket.appendChild(item);
+        });
     }
 }
 
