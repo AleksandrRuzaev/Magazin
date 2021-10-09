@@ -21,6 +21,7 @@ class Basket {
                             good.price,
                             'goods-item',
                             good.quantity,
+                            this.removeItem.bind(this),
                         ),
                 );
             })
@@ -31,17 +32,18 @@ class Basket {
     }
 
     addItem(good) {
-        return makePOSTRequest(
-            `${API_URL}/addToBasket.json`,
-            (good = {
-                product_name: good.title,
-                price: good.price,
-                quantity: 1,
-            }),
-        )
-            .then((data) => {
-                good.id = data.result;
-                this.basketGoods.push(good);
+        return makeGETRequest(`${API_URL}/addToBasket.json`)
+            .then((_) => {
+                this.countGoods++;
+                this.amount += good.price;
+
+                const basketGood = this.basketGoods.find(
+                    (item) => item.id == good.id,
+                );
+
+                if (Boolean(basketGood)) {
+                    basketGood.quantity++;
+                }
             })
             .then((_) => {
                 this.render();
@@ -49,9 +51,8 @@ class Basket {
             .catch((err) => console.error(err));
     }
 
-    // pass id into query string or body request
     removeItem(id) {
-        return makePOSTRequest(`${API_URL}/deleteFromBasket.json`)
+        return makeGETRequest(`${API_URL}/deleteFromBasket.json`)
             .then((_) => {
                 this.basketGoods = this.basketGoods.filter(
                     (good) => good.id != id,
@@ -70,15 +71,18 @@ class Basket {
     }
 
     render() {
-        let listHtml = '';
+        const items = [];
 
         this.basketGoods.forEach((good) => {
-            listHtml += good.render();
+            items.push(good.render());
         });
 
-        document
-            .querySelector(this.selector)
-            .insertAdjacentHTML('beforeend', listHtml);
+        const basket = document.querySelector(this.selector);
+        basket.innerHTML = '';
+
+        items.forEach((item) => {
+            basket.appendChild(item);
+        });
     }
 }
 
