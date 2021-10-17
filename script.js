@@ -77,6 +77,21 @@ Vue.component('basket-list', {
     },
 });
 
+Vue.component('basket-modal', {
+    template: `<div class="basket-modal" v-on:click="onClick">
+        <div class="basket">
+            <h2 class="basket-header">Basket</h2>
+            <span class="close" v-on:click="onClick">&times;</span>
+            <slot></slot>
+        </div>
+    </div>`,
+    methods: {
+        onClick() {
+            this.$emit('close', false);
+        },
+    },
+});
+
 Vue.component('empty-message', {
     template: `<div class="empty-message">
         No elements according to your search.
@@ -103,11 +118,12 @@ new Vue({
         filteredGoods: [],
         searchLine: '',
         isAnyError: false,
+        isModalShown: false,
         timeoutId: 0,
     },
     methods: {
         loadGoods() {
-            fetch(`${API_URL}/catalogData.jso`)
+            fetch(`${API_URL}/catalogData.json`)
                 .then(response => response.json())
                 .then(goods => {
                     this.goods = goods;
@@ -116,7 +132,7 @@ new Vue({
                 .catch(this.setError);
         },
         loadBasketGoods() {
-            fetch(`${API_URL}/getBasket.jso`)
+            fetch(`${API_URL}/getBasket.json`)
                 .then(response => response.json())
                 .then(data => {
                     this.basketGoods = data.contents;
@@ -130,43 +146,24 @@ new Vue({
                 regex.test(good.product_name),
             );
         },
+        onClose(value) {
+            this.isModalShown = value;
+        },
         setError() {
             this.isAnyError = true;
             this.timeoutId = setTimeout(() => {
                 this.isAnyError = false;
             }, 3000);
         },
+        openBasket() {
+            this.isModalShown = true;
+        },
     },
     mounted() {
         this.loadGoods();
         this.loadBasketGoods();
     },
-    unmounted() {},
+    unmounted() {
+        clearTimeout(timeoutId);
+    },
 });
-
-// const basket = new Basket('.basket-list');
-// const list = new GoodsList('.goods-list', basket.addItem.bind(basket));
-
-const modal = document.querySelector('.basket-modal');
-const basketBtn = document.querySelector('.cart-button');
-const closeBtn = document.querySelector('.close');
-
-basketBtn.onclick = function() {
-    modal.style.display = 'flex';
-};
-
-closeBtn.onclick = function() {
-    modal.style.display = 'none';
-};
-
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = 'none';
-    }
-};
-
-// list.fetchGoods().then(_ => {
-//     list.render();
-// });
-
-// basket.fetchGoods();

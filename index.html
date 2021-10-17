@@ -13,18 +13,18 @@
             <error-message v-if="isAnyError"></error-message>
             <header>
                 <search v-on:search="onSearch"></search>
-                <button class="cart-button" type="button">Корзина</button>
+                <button
+                    class="cart-button"
+                    type="button"
+                    v-on:click="openBasket"
+                >
+                    Корзина
+                </button>
             </header>
             <main>
-                <div class="basket-modal">
-                    <div class="basket">
-                        <h2 class="basket-header">Basket</h2>
-                        <span class="close">&times;</span>
-                        <div class="basket-list"></div>
-                        <basket-list v-bind:list="basketGoods"></basket-list>
-                    </div>
-                </div>
-
+                <basket-modal v-if="isModalShown" v-on:close="onClose">
+                    <basket-list v-bind:list="basketGoods"></basket-list>
+                </basket-modal>
                 <goods-list v-bind:list="filteredGoods"></goods-list>
             </main>
         </div>
