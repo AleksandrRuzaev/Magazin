@@ -1,26 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>eShop</title>
-  </head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>eShop</title>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    </head>
 
-  <body>
-    <header>
-      <button class="cart-button" type="button">Корзина</button>
-    </header>
-    <main>
-      <div class="basket-modal">
-        <div class="basket">
-          <h2 class="basket-header">Basket</h2>
-          <span class="close">&times;</span>
-          <div class="basket-list"></div>
+    <body>
+        <div id="app">
+            <header>
+                <search v-on:search="onSearch"></search>
+                <button class="cart-button" type="button">Корзина</button>
+            </header>
+            <main>
+                <div class="basket-modal">
+                    <div class="basket">
+                        <h2 class="basket-header">Basket</h2>
+                        <span class="close">&times;</span>
+                        <div class="basket-list"></div>
+                    </div>
+                </div>
+
+                <goods-list v-bind:list="filteredGoods"></goods-list>
+            </main>
         </div>
-      </div>
-
-      <div class="goods-list"></div>
-    </main>
-  </body>
+    </body>
 </html>
