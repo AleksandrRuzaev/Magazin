@@ -18,6 +18,7 @@ Vue.component('good-item', {
 
 Vue.component('goods-list', {
     template: `<div class="goods-list">
+        <empty-message v-if="list.length == 0"></empty-message>
         <good-item
             v-for="good of list"
             v-bind:key="good.id_product"
@@ -47,22 +48,80 @@ Vue.component('search', {
     },
 });
 
+Vue.component('basket-item', {
+    template: `<div class="goods-item goods-item-basket">
+        <h3>{{title}}</h3>
+        <p>{{price}}</p>
+        <p>{{quantity}}</p>
+        <button>Remove</button>
+    </div>`,
+    props: {
+        title: String,
+        price: Number,
+        quantity: Number,
+    },
+});
+
+Vue.component('basket-list', {
+    template: `<div class="basket-list">
+        <basket-item
+            v-for="good of list"
+            v-bind:key="good.id_product"
+            v-bind:title="good.product_name"
+            v-bind:price="good.price"
+            v-bind:quantity="good.quantity"
+        ></basket-item>
+    </div>`,
+    props: {
+        list: Array,
+    },
+});
+
+Vue.component('empty-message', {
+    template: `<div class="empty-message">
+        No elements according to your search.
+    </div>`,
+    props: {
+        list: Array,
+    },
+});
+
+Vue.component('error-message', {
+    template: `<div class="error-message">
+        something went wrong.
+    </div>`,
+    props: {
+        list: Array,
+    },
+});
+
 new Vue({
     el: '#app',
     data: {
         goods: [],
+        basketGoods: [],
         filteredGoods: [],
         searchLine: '',
+        isAnyError: false,
+        timeoutId: 0,
     },
     methods: {
         loadGoods() {
-            fetch(`${API_URL}/catalogData.json`)
+            fetch(`${API_URL}/catalogData.jso`)
                 .then(response => response.json())
                 .then(goods => {
                     this.goods = goods;
                     this.filteredGoods = goods;
                 })
-                .catch(err => console.error(err));
+                .catch(this.setError);
+        },
+        loadBasketGoods() {
+            fetch(`${API_URL}/getBasket.jso`)
+                .then(response => response.json())
+                .then(data => {
+                    this.basketGoods = data.contents;
+                })
+                .catch(this.setError);
         },
         onSearch(searchLine) {
             const regex = new RegExp(searchLine, 'i');
@@ -71,13 +130,21 @@ new Vue({
                 regex.test(good.product_name),
             );
         },
+        setError() {
+            this.isAnyError = true;
+            this.timeoutId = setTimeout(() => {
+                this.isAnyError = false;
+            }, 3000);
+        },
     },
     mounted() {
         this.loadGoods();
+        this.loadBasketGoods();
     },
+    unmounted() {},
 });
 
-const basket = new Basket('.basket-list');
+// const basket = new Basket('.basket-list');
 // const list = new GoodsList('.goods-list', basket.addItem.bind(basket));
 
 const modal = document.querySelector('.basket-modal');
@@ -98,8 +165,8 @@ window.onclick = function(event) {
     }
 };
 
-list.fetchGoods().then(_ => {
-    list.render();
-});
+// list.fetchGoods().then(_ => {
+//     list.render();
+// });
 
-basket.fetchGoods();
+// basket.fetchGoods();

@@ -11,12 +11,16 @@ html {
 
 header {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
 
     margin-bottom: 1.5rem;
     padding: 1rem;
 
     background-color: rgb(243, 243, 243);
+}
+
+.search {
+    margin-right: 1rem;
 }
 
 .cart-button,
@@ -44,7 +48,7 @@ header {
 }
 
 .search-button:hover {
-  background-color: rgb(31, 47, 66);
+    background-color: rgb(31, 47, 66);
 
     cursor: pointer;
 }
@@ -127,4 +131,32 @@ header {
 
 .goods-item h3 {
     margin-bottom: 0.8rem;
+}
+
+.empty-message {
+    width: 100%;
+    padding: 2rem;
+    margin: 0 2rem;
+
+    text-align: center;
+    font-size: 1.2rem;
+
+    border-radius: 2rem;
+    background-color: rgba(173, 173, 173, 0.527);
+}
+
+.error-message {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    width: auto;
+    padding: 2rem;
+
+    color: white;
+    text-align: center;
+    font-size: 1.2rem;
+
+    border-radius: 1rem;
+    background-color: rgba(250, 74, 74);
 }
