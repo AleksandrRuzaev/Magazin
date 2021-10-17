@@ -1,5 +1,4 @@
 import './style.css';
-import { GoodsList, Basket } from './src/models/index';
 
 const API_URL =
     'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
@@ -8,11 +7,17 @@ Vue.component('good-item', {
     template: `<div class="goods-item">
         <h3>{{title}}</h3>
         <p>{{price}}</p>
-        <button>Add</button>
+        <button v-on:click="onAdd">Add</button>
     </div>`,
     props: {
+        id: Number,
         title: String,
         price: Number,
+    },
+    methods: {
+        onAdd() {
+            this.$emit('add', this.id);
+        },
     },
 });
 
@@ -22,12 +27,23 @@ Vue.component('goods-list', {
         <good-item
             v-for="good of list"
             v-bind:key="good.id_product"
+            v-bind:id="good.id_product"
             v-bind:title="good.product_name"
             v-bind:price="good.price"
+            v-on:add="onAdd"
         ></good-item>
     </div>`,
     props: {
         list: Array,
+    },
+    methods: {
+        onAdd(id) {
+            const good = this.list.find(item => item.id_product == id);
+
+            if (good) {
+                this.$emit('add', good);
+            }
+        },
     },
 });
 
@@ -51,29 +67,56 @@ Vue.component('search', {
 Vue.component('basket-item', {
     template: `<div class="goods-item goods-item-basket">
         <h3>{{title}}</h3>
-        <p>{{price}}</p>
-        <p>{{quantity}}</p>
-        <button>Remove</button>
+        <p>Price: {{price}}</p>
+        <p>Quantity: {{quantity}}</p>
+        <button v-on:click="onDelete">Remove</button>
     </div>`,
     props: {
+        id: Number,
         title: String,
         price: Number,
         quantity: Number,
     },
+    methods: {
+        onDelete() {
+            this.$emit('delete', this.id);
+        },
+    },
 });
 
 Vue.component('basket-list', {
-    template: `<div class="basket-list">
-        <basket-item
-            v-for="good of list"
-            v-bind:key="good.id_product"
-            v-bind:title="good.product_name"
-            v-bind:price="good.price"
-            v-bind:quantity="good.quantity"
-        ></basket-item>
+    template: `
+    <div>
+        <div class="basket-list">
+            <basket-item
+                v-for="good of goods"
+                v-bind:key="good.id_product"
+                v-bind:id="good.id_product"
+                v-bind:title="good.product_name"
+                v-bind:price="good.price"
+                v-bind:quantity="good.quantity"
+                v-on:delete="onDelete"
+            ></basket-item>
+        </div>
+        <div class="basket-price">All price: {{getSumPrice()}}</div>
     </div>`,
     props: {
         list: Array,
+    },
+    data() {
+        return {
+            goods: [...this.list],
+        };
+    },
+    methods: {
+        onDelete(id) {
+            this.goods = this.goods.filter(item => item.id_product !== id);
+        },
+        getSumPrice() {
+            return this.goods.reduce((total, item) => {
+                return (total += item.price * item.quantity);
+            }, 0);
+        },
     },
 });
 
@@ -86,8 +129,13 @@ Vue.component('basket-modal', {
         </div>
     </div>`,
     methods: {
-        onClick() {
-            this.$emit('close', false);
+        onClick(event) {
+            if (
+                event.target.classList.contains('close') ||
+                event.target.classList.contains('basket-modal')
+            ) {
+                this.$emit('close', false);
+            }
         },
     },
 });
@@ -157,6 +205,15 @@ new Vue({
         },
         openBasket() {
             this.isModalShown = true;
+        },
+        onAdd(good) {
+            const index = this.basketGoods.findIndex(
+                item => item.id_product == good.id_product,
+            );
+
+            if (index > -1) {
+                this.basketGoods[index].quantity++;
+            }
         },
     },
     mounted() {

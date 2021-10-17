@@ -108,6 +108,10 @@ header {
     cursor: pointer;
 }
 
+.basket-price {
+    margin-top: 1rem;
+}
+
 .goods-list,
 .basket-list {
     display: flex;

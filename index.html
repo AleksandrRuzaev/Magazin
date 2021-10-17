@@ -25,7 +25,10 @@
                 <basket-modal v-if="isModalShown" v-on:close="onClose">
                     <basket-list v-bind:list="basketGoods"></basket-list>
                 </basket-modal>
-                <goods-list v-bind:list="filteredGoods"></goods-list>
+                <goods-list
+                    v-bind:list="filteredGoods"
+                    v-on:add="onAdd"
+                ></goods-list>
             </main>
         </div>
     </body>
