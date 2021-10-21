@@ -1,7 +1,6 @@
 import './style.css';
 
-const API_URL =
-    'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
+const API_URL = 'http://127.0.0.1:3030';
 
 Vue.component('good-item', {
     template: `<div class="goods-item">
@@ -38,7 +37,7 @@ Vue.component('goods-list', {
     },
     methods: {
         onAdd(id) {
-            const good = this.list.find(item => item.id_product == id);
+            const good = this.list.find((item) => item.id_product == id);
 
             if (good) {
                 this.$emit('add', good);
@@ -110,7 +109,7 @@ Vue.component('basket-list', {
     },
     methods: {
         onDelete(id) {
-            this.goods = this.goods.filter(item => item.id_product !== id);
+            this.goods = this.goods.filter((item) => item.id_product !== id);
         },
         getSumPrice() {
             return this.goods.reduce((total, item) => {
@@ -171,9 +170,14 @@ new Vue({
     },
     methods: {
         loadGoods() {
-            fetch(`${API_URL}/catalogData.json`)
-                .then(response => response.json())
-                .then(goods => {
+            fetch(`${API_URL}/catalogData.json`, {
+                mode: 'no-cors',
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                },
+            })
+                .then((response) => response.json())
+                .then((goods) => {
                     this.goods = goods;
                     this.filteredGoods = goods;
                 })
@@ -181,8 +185,8 @@ new Vue({
         },
         loadBasketGoods() {
             fetch(`${API_URL}/getBasket.json`)
-                .then(response => response.json())
-                .then(data => {
+                .then((response) => response.json())
+                .then((data) => {
                     this.basketGoods = data.contents;
                 })
                 .catch(this.setError);
@@ -190,7 +194,7 @@ new Vue({
         onSearch(searchLine) {
             const regex = new RegExp(searchLine, 'i');
 
-            this.filteredGoods = this.goods.filter(good =>
+            this.filteredGoods = this.goods.filter((good) =>
                 regex.test(good.product_name),
             );
         },
@@ -208,7 +212,7 @@ new Vue({
         },
         onAdd(good) {
             const index = this.basketGoods.findIndex(
-                item => item.id_product == good.id_product,
+                (item) => item.id_product == good.id_product,
             );
 
             if (index > -1) {
