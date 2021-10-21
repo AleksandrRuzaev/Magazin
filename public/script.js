@@ -15,7 +15,18 @@ Vue.component('good-item', {
     },
     methods: {
         onAdd() {
-            this.$emit('add', this.id);
+            fetch(`${API_URL}/addToCart`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/JSON',
+                },
+                body: JSON.stringify({
+                    id_product: this.id,
+                    product_name: this.title,
+                    price: this.price,
+                }),
+            });
+            // this.$emit('add', this.id);
         },
     },
 });
@@ -78,6 +89,17 @@ Vue.component('basket-item', {
     },
     methods: {
         onDelete() {
+            fetch(`${API_URL}/removeFromCart`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/JSON',
+                },
+                body: JSON.stringify({
+                    id_product: this.id,
+                    product_name: this.title,
+                    price: this.price,
+                }),
+            });
             this.$emit('delete', this.id);
         },
     },
@@ -104,7 +126,7 @@ Vue.component('basket-list', {
     },
     data() {
         return {
-            goods: [...this.list],
+            goods: [],
         };
     },
     methods: {
@@ -112,10 +134,26 @@ Vue.component('basket-list', {
             this.goods = this.goods.filter((item) => item.id_product !== id);
         },
         getSumPrice() {
-            return this.goods.reduce((total, item) => {
-                return (total += item.price * item.quantity);
-            }, 0);
+            if (this.goods) {
+                return this.goods.reduce((total, item) => {
+                    return (total += item.price * item.quantity);
+                }, 0);
+            }
+
+            return 0;
         },
+    },
+    mounted() {
+        fetch(`${API_URL}/getBasket`)
+            .then((response) => response.json())
+            .then((data) => {
+                if (data) {
+                    this.goods = data;
+                } else {
+                    this.goods = [];
+                }
+            })
+            .catch(this.setError);
     },
 });
 
@@ -170,12 +208,7 @@ new Vue({
     },
     methods: {
         loadGoods() {
-            fetch(`${API_URL}/catalogData.json`, {
-                mode: 'no-cors',
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                },
-            })
+            fetch(`${API_URL}/catalogData`)
                 .then((response) => response.json())
                 .then((goods) => {
                     this.goods = goods;
@@ -184,10 +217,14 @@ new Vue({
                 .catch(this.setError);
         },
         loadBasketGoods() {
-            fetch(`${API_URL}/getBasket.json`)
+            fetch(`${API_URL}/getBasket`)
                 .then((response) => response.json())
                 .then((data) => {
-                    this.basketGoods = data.contents;
+                    if (data) {
+                        this.basketGoods = data.contents;
+                    } else {
+                        this.basketGoods = [];
+                    }
                 })
                 .catch(this.setError);
         },
