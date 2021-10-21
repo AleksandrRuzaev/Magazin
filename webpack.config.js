@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     mode: 'development',
-    entry: './script.js',
+    entry: './public/script.js',
     output: {
         path: path.resolve(__dirname, 'build'),
         publicPath: '',
@@ -50,8 +50,8 @@ module.exports = {
             proxy: 'http://localhost:3000/',
         }),
         new HtmlWebPackPlugin({
-            template: path.resolve('./index.html'),
+            template: path.resolve('./public/index.html'),
         }),
-        new MiniCssExtractPlugin({ filename: 'style.css' }),
+        new MiniCssExtractPlugin({ filename: './public/style.css' }),
     ],
 };
