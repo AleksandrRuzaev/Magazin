@@ -43,6 +43,8 @@ app.post('/addToCart', (req, res) => {
         fs.writeFile('data/cart.json', JSON.stringify(cart), (err) => {
             res.end();
         });
+
+        addLog('POST', item.product_name);
     });
 });
 
@@ -58,9 +60,34 @@ app.post('/removeFromCart', (req, res) => {
         fs.writeFile('data/cart.json', JSON.stringify(result), (err) => {
             res.end();
         });
+
+        addLog('DELETE', item.product_name);
     });
 });
 
 app.listen(port, () => {
     console.log(`server is running on port ${port}!`);
 });
+
+function addLog(userAction, itemTitle) {
+    fs.readFile('data/log.json', 'utf8', (err, data) => {
+        const stats = JSON.parse(data);
+
+        const action = {
+            action: userAction,
+            item: itemTitle,
+            date: new Date().toLocaleDateString(),
+        };
+
+        stats.push(action);
+
+        fs.writeFile(
+            'data/log.json',
+            JSON.stringify(stats, null, '\t'),
+            (err) => {
+                if (err) throw err;
+                console.log('The file has been saved!');
+            },
+        );
+    });
+}
